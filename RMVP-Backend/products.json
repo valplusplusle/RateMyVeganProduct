@@ -1,0 +1,18 @@
+{
+    "products": [
+    {
+        "id": "00001",
+        "name": "Vegan Test Tofu",
+        "info": "Text about the Product",
+        "picture": "link/to/picture",
+        "value": "0"
+    },
+    {
+        "id": "00002",
+        "name": "Vegan Test Cheese",
+        "info": "Text about the Product",
+        "picture": "link/to/picture",
+        "value": "0"
+    }
+    ]
+}
