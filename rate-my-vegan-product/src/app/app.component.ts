@@ -11,12 +11,15 @@ export class AppComponent {
   title = 'rate-my-vegan-product';
   products: Observable<any>;
   postId;
+  showProductList = true;
+  showAddProductPage = false;
   
+  element: HTMLElement;
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.getJsonData();
-    this.sendJsonData("test");
+    //this.sendJsonData("test");
   }
 
   getJsonData() {
@@ -30,11 +33,12 @@ export class AppComponent {
     .catch(err => { throw err });
   }
 
-  sendJsonData(newProduct) {
-    const data = JSON.stringify(newProduct)
+  sendJsonData(jsonData) {
+    const data = JSON.stringify(jsonData)
+
     const httpOptions = {
       headers: ({
-          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Type': 'application/json',
       })
     }
     this.http.post("http://localhost:3000/newProduct", data, httpOptions)
@@ -49,6 +53,22 @@ export class AppComponent {
         () => {
             console.log("The POST observable is now completed.");
         });
+  }
+
+  addProduct() {
+    this.showProductList = false;
+    this.showAddProductPage = true;
+  }
+  
+  sendProduct() {
+    const productName =  (<HTMLInputElement>document.getElementById("productName")).value
+    const productTyp =  (<HTMLInputElement>document.getElementById("productTyp")).value
+    const productInfo =  (<HTMLInputElement>document.getElementById("productInfo")).value
+    let data = {productName: productName, productTyp: productTyp, productInfo: productInfo};
+    this.sendJsonData(data)
+    this.showAddProductPage = false;
+    this.showProductList = true;
+    this.getJsonData();
   }
 }
 
