@@ -8,7 +8,6 @@ var Datastore = require('nedb')
 
 app.use(cors())
 
-
 app.get('/', function (req, res, next) {
   db.find({}, function (err, docs) {
     res.json(docs)
@@ -18,6 +17,18 @@ app.get('/', function (req, res, next) {
 app.post('/newProduct', function (req, res, next) {
   console.log('Got body:', req.body);
   addProductToDatabase(req.body)
+  res.sendStatus(200);
+})
+
+app.post('/upvote', function (req, res, next) {
+  console.log('Got body:', req.body);
+  upvoteProduct(req.body)
+  res.sendStatus(200);
+})
+
+app.post('/downvote', function (req, res, next) {
+  console.log('Got body:', req.body);
+  downvoteProduct(req.body)
   res.sendStatus(200);
 })
 
@@ -34,3 +45,34 @@ function addProductToDatabase(jsonData) {
   };
   db.insert(doc, function (err, newDoc) {});
 }
+
+function upvoteProduct(jsonData) {
+  console.log(jsonData.id)
+  db.find({ _id: jsonData.id }, function (err, docs) {
+    var newScore = docs[0].score + 1
+    db.update(
+      { _id: jsonData.id}, 
+      { $set: { score: newScore} },
+      {},
+      function (err, numReplaced) {
+        console.log(numReplaced);
+      }
+      );
+  });
+}
+
+function downvoteProduct(jsonData) {
+  console.log(jsonData.id)
+  db.find({ _id: jsonData.id }, function (err, docs) {
+    var newScore = docs[0].score - 1
+    db.update(
+      { _id: jsonData.id}, 
+      { $set: { score: newScore} },
+      {},
+      function (err, numReplaced) {
+        console.log(numReplaced);
+      }
+      );
+  });
+}
+

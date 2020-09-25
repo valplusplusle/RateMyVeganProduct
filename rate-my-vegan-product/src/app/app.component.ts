@@ -7,51 +7,55 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'rate-my-vegan-product';
   products: Observable<any>;
   postId;
   showProductList = true;
   showAddProductPage = false;
-  
+  serverIp = 'http://localhost:3000/';
+
   element: HTMLElement;
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.getJsonData();
-    //this.sendJsonData("test");
+  }
+
+  sleep(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
   }
 
   getJsonData() {
-    let url = 'http://localhost:3000/';
+    const url = this.serverIp;
     fetch(url)
     .then(res => res.json())
     .then((out) => {
-      console.log(out)
-      this.products = out;      
+      console.log(out);
+      this.products = out;
     })
-    .catch(err => { throw err });
+    .catch(err => { throw err; });
   }
 
   sendJsonData(jsonData) {
-    const data = JSON.stringify(jsonData)
+    const data = JSON.stringify(jsonData);
 
     const httpOptions = {
       headers: ({
           'Content-Type': 'application/json',
       })
-    }
-    this.http.post("http://localhost:3000/newProduct", data, httpOptions)
+    };
+    this.http.post(this.serverIp + 'newProduct', data, httpOptions)
     .subscribe(
         (val) => {
-        console.log("POST call successful value returned in body", 
+        console.log('POST call successful value returned in body',
                     val);
         },
         response => {
-            console.log("POST call in error", response);
+            console.log('POST call in error', response);
         },
         () => {
-            console.log("The POST observable is now completed.");
+            console.log('The POST observable is now completed.');
         });
   }
 
@@ -59,16 +63,70 @@ export class AppComponent {
     this.showProductList = false;
     this.showAddProductPage = true;
   }
-  
+
   sendProduct() {
-    const productName =  (<HTMLInputElement>document.getElementById("productName")).value
-    const productTyp =  (<HTMLInputElement>document.getElementById("productTyp")).value
-    const productInfo =  (<HTMLInputElement>document.getElementById("productInfo")).value
-    let data = {productName: productName, productTyp: productTyp, productInfo: productInfo};
-    this.sendJsonData(data)
+    const productName = (document.getElementById('productName') as HTMLInputElement).value;
+    const productTyp = (document.getElementById('productTyp') as HTMLInputElement).value;
+    const productInfo = (document.getElementById('productInfo') as HTMLInputElement).value;
+    const data = {productName: productName, productTyp: productTyp, productInfo: productInfo};
+    this.sendJsonData(data);
     this.showAddProductPage = false;
     this.showProductList = true;
-    this.getJsonData();
+    this.sleep(500).then(() => {
+      this.getJsonData();
+    });
+  }
+
+  upvote(productId) {
+    if (!localStorage.getItem(productId)) {
+      localStorage.setItem(productId, 'Voted');
+      const data = JSON.stringify({id: productId});
+      const httpOptions = {
+        headers: ({
+            'Content-Type': 'application/json',
+        })
+      };
+      this.http.post(this.serverIp + 'upvote', data, httpOptions)
+      .subscribe(
+          (val) => {
+          console.log('POST call successful value returned in body', val);
+          },
+          response => {
+              console.log('POST call in error', response);
+          },
+          () => {
+              console.log('The POST observable is now completed.');
+          });
+      this.sleep(500).then(() => {
+        this.getJsonData();
+      });
+    }
+  }
+
+  downvote(productId) {
+    if (!localStorage.getItem(productId)) {
+      localStorage.setItem(productId, 'Voted');
+      const data = JSON.stringify({id: productId});
+      const httpOptions = {
+        headers: ({
+            'Content-Type': 'application/json',
+        })
+      };
+      this.http.post(this.serverIp + 'downvote', data, httpOptions)
+      .subscribe(
+          (val) => {
+          console.log('POST call successful value returned in body', val);
+          },
+          response => {
+              console.log('POST call in error', response);
+          },
+          () => {
+              console.log('The POST observable is now completed.');
+          });
+      this.sleep(500).then(() => {
+        this.getJsonData();
+      });
+    }
   }
 }
 
