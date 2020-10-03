@@ -68,13 +68,25 @@ export class AppComponent implements OnInit {
     const productName = (document.getElementById('productName') as HTMLInputElement).value;
     const productTyp = (document.getElementById('productTyp') as HTMLInputElement).value;
     const productInfo = (document.getElementById('productInfo') as HTMLInputElement).value;
-    const data = {productName: productName, productTyp: productTyp, productInfo: productInfo};
-    this.sendJsonData(data);
-    this.showAddProductPage = false;
-    this.showProductList = true;
-    this.sleep(500).then(() => {
-      this.getJsonData();
-    });
+    const file = (document.getElementById('pictureAdd') as HTMLInputElement).files[0];
+
+
+    const reader = new FileReader();
+    let url;
+
+    reader.readAsDataURL(file);
+
+    reader.onload = (event) => {
+      url = event.target.result;
+      console.log(url);
+      const data = {productName: productName, productTyp: productTyp, productInfo: productInfo, file: url};
+      this.sendJsonData(data);
+      this.showAddProductPage = false;
+      this.showProductList = true;
+      this.sleep(500).then(() => {
+        this.getJsonData();
+      });
+    };
   }
 
   upvote(productId) {
@@ -128,5 +140,29 @@ export class AppComponent implements OnInit {
       });
     }
   }
+
+  remove(productId) {
+      const data = JSON.stringify({id: productId});
+      const httpOptions = {
+        headers: ({
+            'Content-Type': 'application/json',
+        })
+      };
+      this.http.post(this.serverIp + 'remove', data, httpOptions)
+      .subscribe(
+          (val) => {
+          console.log('POST call successful value returned in body', val);
+          },
+          response => {
+              console.log('POST call in error', response);
+          },
+          () => {
+              console.log('The POST observable is now completed.');
+          });
+      this.sleep(500).then(() => {
+        this.getJsonData();
+      });
+  }
+
 }
 

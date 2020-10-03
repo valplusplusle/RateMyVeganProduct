@@ -7,12 +7,19 @@
 <main role="main" class="container">
 <div id="productList" *ngIf="showProductList">
     <div class="jumbotron" *ngFor="let product of products">
-        <h1>{{product.name}}</h1>
-        <div>{{product.info}}</div>
-        <div class="d-flex justifine-content-start">
-            <div class="btn btn-success" (click)="upvote(product._id)">upvote</div>
+        <h1 class="text-center">{{product.name}}</h1>
+        <img src="{{ product.file }}" class="rounded mx-auto d-block img-fluid" alt="Red dot" />
+        <div class="text-center">{{product.typ}}</div>
+        <div class="text-center">{{product.info}}</div>
+        <br>
+        <div class="d-flex justify-content-center">
+            <div class="btn btn-success btn-block" (click)="upvote(product._id)">upvote</div>
             <div class="btn btn-primary">{{product.score}}</div>
-            <div class="btn btn-danger">downvote</div>
+            <div class="btn btn-danger btn-block" (click)="downvote(product._id)">downvote</div>
+        </div>
+        <br>
+        <div class="d-flex justify-content-center">
+          <div class="btn btn-danger btn-block" (click)="remove(product._id)">Remove Product</div>
         </div>
     </div>
 </div>
@@ -24,6 +31,10 @@
               <label for="exampleFormControlInput1">Produkt Name:</label>
               <input type="text" class="form-control" id="productName" placeholder="">
             </div>
+            <br>
+            Foto:
+            <input type="file" accept="image/*" capture="camera" id="pictureAdd">
+            <br><br>
             <div class="form-group">
               <label for="exampleFormControlSelect1">Produkt Typ</label>
               <select class="form-control" id="productTyp">
