@@ -13,7 +13,7 @@ export class AppComponent implements OnInit {
   postId;
   showProductList = true;
   showAddProductPage = false;
-  serverIp = 'http://localhost:3000/';
+  serverIp = 'http://blank42.de:3000/';
 
   element: HTMLElement;
   constructor(private http: HttpClient) { }
