@@ -8,7 +8,7 @@
 <div id="productList" *ngIf="showProductList">
     <div class="jumbotron" *ngFor="let product of products">
         <h1 class="text-center">{{product.name}}</h1>
-        <img class="image-holder" [src]=getSantizeUrl(product.file) />
+        <img class="image-holder rounded mx-auto d-block img-fluid" [src]=getSantizeUrl(product.file) />
         <div class="text-center">{{product.typ}}</div>
         <div class="text-center">{{product.info}}</div>
         <br>

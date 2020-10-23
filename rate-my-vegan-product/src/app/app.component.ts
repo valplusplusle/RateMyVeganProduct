@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
       console.log(out);
       this.products = out;
       this.products.forEach(product => {
-        product.file = 'https://blank42.de/RMVP-Pictures/' + product.file + '.jpg';
+        product.file = 'https://blank42.de/RMVP-Pictures/' + product.file + '.png';
       });
     })
     .catch(err => { throw err; });

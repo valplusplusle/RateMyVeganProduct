@@ -73,13 +73,11 @@ function addProductToDatabase(jsonData) {
 
   var uniqueId = makeid(6)
 
-  var base64 = jsonData.file;
-  var ReadableData = require('stream').Readable
-  const imageBufferData = Buffer.from(base64, 'base64')
-  var streamObj = new ReadableData()
-  streamObj.push(imageBufferData)
-  streamObj.push(null)
-  streamObj.pipe(fs.createWriteStream("/var/www/html/RMVP-Pictures/"+uniqueId+'.jpg'));
+  var base64ToImage = require('base64-to-image');
+  var base64Str = jsonData.file;
+  var path ='/var/www/html/RMVP-Pictures/';
+  var optionalObj = {'fileName': uniqueId, 'type':'png'};
+  base64ToImage(base64Str,path,optionalObj); 
 
     var doc = { name: jsonData.productName
   , info: jsonData.productInfo
