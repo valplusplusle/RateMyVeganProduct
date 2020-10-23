@@ -1,6 +1,12 @@
 var express = require("express");
 var cors = require('cors');
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
+
 var app = express();
+app.use(cors())
+
 var bodyParser = require('body-parser')
 app.use(bodyParser.json({limit: '200mb'}));
 app.use(bodyParser.urlencoded({limit: '200mb', extended: true}));
@@ -8,9 +14,8 @@ app.use(bodyParser.text({ limit: '200mb' }));
 var Datastore = require('nedb')
   , db = new Datastore({ filename: './database', autoload: true });
 
-app.use(cors())
-
 app.get('/', function (req, res, next) {
+  console.log("is called")
   db.find({}, function (err, docs) {
     res.json(docs)
   });
@@ -40,8 +45,18 @@ app.post('/remove', function (req, res, next) {
   res.sendStatus(200);
 })
 
-app.listen(3000, () => {
-    console.log("Server running on port 3000");
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer({
+  key: fs.readFileSync('/etc/letsencrypt/live/blank42.de/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/blank42.de/fullchain.pem'),
+}, app);
+
+httpServer.listen(3000, () => {
+  console.log('HTTP Server running on port 80');
+});
+
+httpsServer.listen(3030, () => {
+  console.log('HTTPS Server running on port 443');
 });
 
 function makeid(length) {
@@ -57,14 +72,14 @@ function makeid(length) {
 function addProductToDatabase(jsonData) {
 
   var uniqueId = makeid(6)
-  require("fs").writeFile(uniqueId+".png", jsonData.file, 'base64', function(err) {
+  require("fs").writeFile("/var/www/html/RMVP-Pictures/"+uniqueId, jsonData.file, {encoding: 'base64'}, function(err) {
     console.log(err);
   });
 
     var doc = { name: jsonData.productName
   , info: jsonData.productInfo
   , typ: jsonData.productTyp
-  , file: uniqueId+".png"
+  , file: uniqueId
   , score: 0
   };
   db.insert(doc, function (err, newDoc) {});

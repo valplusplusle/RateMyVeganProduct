@@ -8,7 +8,7 @@
 <div id="productList" *ngIf="showProductList">
     <div class="jumbotron" *ngFor="let product of products">
         <h1 class="text-center">{{product.name}}</h1>
-        <img src="projects/RateMyVeganProduct/RMVP-Backend{{ product.file }}" class="rounded mx-auto d-block img-fluid" alt="Red dot" />
+        <img class="image-holder" [src]=getSantizeUrl(product.file) />
         <div class="text-center">{{product.typ}}</div>
         <div class="text-center">{{product.info}}</div>
         <br>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -13,10 +14,15 @@ export class AppComponent implements OnInit {
   postId;
   showProductList = true;
   showAddProductPage = false;
-  serverIp = 'http://blank42.de:3000/';
+  serverIp = 'https://blank42.de:3030/';
 
   element: HTMLElement;
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private sanitizer: DomSanitizer) {
+  }
+
+  public getSantizeUrl(url: string) {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
+  }
 
   ngOnInit(): void {
     this.getJsonData();
@@ -33,6 +39,9 @@ export class AppComponent implements OnInit {
     .then((out) => {
       console.log(out);
       this.products = out;
+      this.products.forEach(product => {
+        product.file = 'https://blank42.de/RMVP-Pictures/' + product.file;
+      });
     })
     .catch(err => { throw err; });
   }
