@@ -72,9 +72,14 @@ function makeid(length) {
 function addProductToDatabase(jsonData) {
 
   var uniqueId = makeid(6)
-  require("fs").writeFile("/var/www/html/RMVP-Pictures/"+uniqueId, jsonData.file, {encoding: 'base64'}, function(err) {
-    console.log(err);
-  });
+
+  var base64 = jsonData.file;
+  var ReadableData = require('stream').Readable
+  const imageBufferData = Buffer.from(base64, 'base64')
+  var streamObj = new ReadableData()
+  streamObj.push(imageBufferData)
+  streamObj.push(null)
+  streamObj.pipe(fs.createWriteStream("/var/www/html/RMVP-Pictures/"+uniqueId+'.jpg'));
 
     var doc = { name: jsonData.productName
   , info: jsonData.productInfo
