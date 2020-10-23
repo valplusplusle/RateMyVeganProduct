@@ -44,11 +44,27 @@ app.listen(3000, () => {
     console.log("Server running on port 3000");
 });
 
+function makeid(length) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 function addProductToDatabase(jsonData) {
+
+  var uniqueId = makeid(6)
+  require("fs").writeFile(uniqueId+".png", jsonData.file, 'base64', function(err) {
+    console.log(err);
+  });
+
     var doc = { name: jsonData.productName
   , info: jsonData.productInfo
   , typ: jsonData.productTyp
-  , file: jsonData.file
+  , file: uniqueId+".png"
   , score: 0
   };
   db.insert(doc, function (err, newDoc) {});
