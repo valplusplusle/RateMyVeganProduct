@@ -14,7 +14,10 @@ export class AppComponent implements OnInit {
   postId;
   showProductList = true;
   showAddProductPage = false;
+  showPrivateList = false;
+  searchText;
   serverIp = 'https://blank42.de:3030/';
+  privateProducts = [];
 
   element: HTMLElement;
   constructor(private http: HttpClient, private sanitizer: DomSanitizer) {
