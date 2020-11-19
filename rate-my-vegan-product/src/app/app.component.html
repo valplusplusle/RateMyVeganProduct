@@ -5,12 +5,10 @@
 </nav>
 <br><br><br>
 <main role="main" class="container">
-<br>
 <div class="search-hero">
   <input class="form-control" type="text" name="search" [(ngModel)]="searchText" autocomplete="off" placeholder="🔍   Search for a specific product">
 </div>
 <br>
-
 <div id="productList" *ngIf="showProductList">
     <div class="jumbotron" *ngFor="let product of checkedProductList | filter: searchText">
         <div class="d-flex justify-content-between">
