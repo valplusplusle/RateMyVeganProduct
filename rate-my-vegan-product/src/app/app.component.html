@@ -75,6 +75,6 @@
 </main>
 
 <div class="topBar d-flex justify-content-between">
-  <div class="btn btn-primary listButton" (click)="showProductList=true; showPrivateList=false">Online List</div>
-  <div class="btn btn-primary listButton" (click)="showPrivateList=true; showProductList=false">Private List</div>
+  <div class="btn btn-secondary listButton" [ngClass]="{'activeButton': showProductList == true}" (click)="showProductList=true; showPrivateList=false">Online List</div>
+  <div class="btn btn-secondary listButton" [ngClass]="{'activeButton': showPrivateList == true}" (click)="showPrivateList=true; showProductList=false">Private List</div>
 </div>
