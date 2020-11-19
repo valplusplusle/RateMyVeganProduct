@@ -18,6 +18,9 @@ export class AppComponent implements OnInit {
   searchText;
   serverIp = 'https://blank42.de:3030/';
   privateProducts = [];
+  productList = [];
+  dissallowedProducts = [];
+  checkedProductList = [];
 
   element: HTMLElement;
   constructor(private http: HttpClient, private sanitizer: DomSanitizer) {
@@ -29,6 +32,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.getJsonData();
+    try {
+      this.dissallowedProducts = localStorage.getItem('removedList').split(',');
+    } catch (error) {
+    }
   }
 
   sleep(time) {
@@ -42,8 +49,14 @@ export class AppComponent implements OnInit {
     .then((out) => {
       console.log(out);
       this.products = out;
+      this.checkedProductList = [];
       this.products.forEach(product => {
         product.file = 'https://blank42.de/RMVP-Pictures/' + product.file + '.png';
+      });
+      this.products.forEach(product => {
+        if (!this.dissallowedProducts.includes(product._id)) {
+          this.checkedProductList.push(product);
+        }
       });
     })
     .catch(err => { throw err; });
@@ -153,7 +166,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  remove(productId) {
+  removeFromOnlineList(productId) {
       const data = JSON.stringify({id: productId});
       const httpOptions = {
         headers: ({
@@ -174,6 +187,20 @@ export class AppComponent implements OnInit {
       this.sleep(500).then(() => {
         this.getJsonData();
       });
+  }
+
+  remove(productId) {
+    if (localStorage.getItem('removedList')) {
+      let removedList = localStorage.getItem('removedList');
+      removedList = removedList + productId + ',';
+      localStorage.setItem('removedList', removedList);
+      this.dissallowedProducts = localStorage.getItem('removedList').split(',');
+      this.getJsonData();
+    } else {
+      localStorage.setItem('removedList', productId + ',');
+      this.dissallowedProducts = localStorage.getItem('removedList').split(',');
+      this.getJsonData();
+    }
   }
 
 }
